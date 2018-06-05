@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './App.css'
 import Toolbar from './components/toolbar'
+import {Editor, EditorState} from 'draft-js'
 
 class App extends Component {
     constructor(props) {
@@ -12,10 +13,18 @@ class App extends Component {
             orderedPressed: false,
             imagePressed: false,
             linkPressed: false,
+            editorState: EditorState.createEmpty(),
         }
     }
 
+    _onChange(editorState) {
+        this.setState({editorState})
+    }
+
     _onBoldClick() {
+        const selection = this.state.editorState.getSelection()
+        console.log(selection)
+        console.log(this.state.editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType())
         this.setState({boldPressed: !this.state.boldPressed})
     }
 
@@ -60,6 +69,10 @@ class App extends Component {
                         orderedListPressed={this.state.orderedListPressed}
                         imagePressed={this.state.imagePressed}
                         linkPressed={this.state.linkPressed}
+                    />
+                    <Editor
+                        editorState={this.state.editorState}
+                        onChange={this._onChange.bind(this)}
                     />
                 </div>
             </div>
