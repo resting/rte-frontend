@@ -4,7 +4,7 @@ class Button extends Component {
     render() {
         return (
             <button onClick={this.props.onClickHandler}
-                className={this.props.pressedState}>{this.props.children}</button>
+                className={this.props.className}>{this.props.children}</button>
         )
     }
 }

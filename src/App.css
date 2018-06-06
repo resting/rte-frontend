@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+body, html, select, input, button {
+    font-size: 16px;
+}
+
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -50,13 +54,54 @@ button {
     border-radius: 2px;
 }
 
+button.text {
+    padding-bottom: .3em;
+}
+
+button:active {
+    color: dodgerblue;
+    border: 1px solid #ddd;
+}
+
 .pressed {
     color: dodgerblue;
     border: 1px solid #ddd;
+}
+
+.editor {
+    min-height: 100px;
+    border: 1px solid #ddd;
+    border-top: 0;
+    padding: .5em;
 }
 
 .container {
     max-width: 1024px;
     padding: 1em;
     margin: 0 auto;
+}
+
+.linkinput {
+    outline: none;
+}
+
+.toolbar-left,
+.tooblar-right {
+    display: flex;
+    align-items: center;
+}
+
+.linkinputwrap {
+    display: flex;
+    align-content: center;
+}
+
+.linkinputwrap:before {
+    content: 'link';
+    font-family: 'Material Icons';
+    display: inline-block;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin-right: .3em;
 }
