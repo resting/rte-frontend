@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './App.css'
 import Toolbar from './components/toolbar'
-import {Editor, EditorState} from 'draft-js'
+import {Editor, EditorState, RichUtils} from 'draft-js'
 
 class App extends Component {
     constructor(props) {
@@ -10,45 +10,87 @@ class App extends Component {
             boldPressed: false,
             italicPressed: false,
             unorderedListPressed: false,
-            orderedPressed: false,
+            orderedListPressed: false,
             imagePressed: false,
             linkPressed: false,
             editorState: EditorState.createEmpty(),
         }
     }
 
-    _onChange(editorState) {
-        this.setState({editorState})
+    focus() {
+        this.refs.editor.focus()
     }
 
-    _onBoldClick() {
-        const selection = this.state.editorState.getSelection()
-        console.log(selection)
-        console.log(this.state.editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType())
-        this.setState({boldPressed: !this.state.boldPressed})
+    onChange(editorState) {
+        const currentStyle = editorState.getCurrentInlineStyle()
+        const pressed = {
+            boldPressed: false,
+            italicPressed: false,
+            unorderedListPressed: false,
+            orderedListPressed: false,
+            imagePressed: false,
+            linkPressed: false,
+        }
+
+        const selection = editorState.getSelection()
+        const currentStyles = currentStyle.toArray()
+        pressed.boldPressed = currentStyles.includes('BOLD')
+        pressed.italicPressed = currentStyles.includes('ITALIC')
+
+        const blockType = editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType()
+        pressed.unorderedListPressed = blockType === 'unordered-list-item'
+        pressed.orderedListPressed = blockType === 'ordered-list-item'
+
+        this.setState({...pressed, editorState})
     }
 
-    _onItalicClick() {
-        this.setState({italicPressed: !this.state.italicPressed})
+    onBoldClick() {
+        // this.setState({boldPressed: !this.state.boldPressed})
+        this.onChange(
+            RichUtils.toggleInlineStyle(
+                this.state.editorState,
+                'BOLD',
+            ),
+        )
     }
 
-    _onUnorderedListClick() {
-        this.setState({unorderedListPressed: !this.state.unorderedListPressed})
-
+    onItalicClick() {
+        // this.setState({italicPressed: !this.state.italicPressed})
+        this.onChange(
+            RichUtils.toggleInlineStyle(
+                this.state.editorState,
+                'ITALIC',
+            ),
+        )
     }
 
-    _onOrderedListClick() {
+    onUnorderedListClick() {
+        // this.setState({unorderedListPressed: !this.state.unorderedListPressed})
+        this.onChange(
+            RichUtils.toggleBlockType(
+                this.state.editorState,
+                'unordered-list-item',
+            ),
+        )
+    }
+
+    onOrderedListClick() {
         this.setState({orderedListPressed: !this.state.orderedListPressed})
+        this.onChange(
+            RichUtils.toggleBlockType(
+                this.state.editorState,
+                'ordered-list-item',
+            ),
+        )
+    }
+
+    onImageClick() {
+        // this.setState({imagePressed: !this.state.imagePressed})
 
     }
 
-    _onImageClick() {
-        this.setState({imagePressed: !this.state.imagePressed})
-
-    }
-
-    _onLinkClick() {
-        this.setState({linkPressed: !this.state.linkPressed})
+    onLinkClick() {
+        // this.setState({linkPressed: !this.state.linkPressed})
 
     }
 
@@ -57,23 +99,27 @@ class App extends Component {
             <div className="App">
                 <div className="container">
                     <Toolbar
-                        onBoldClick={this._onBoldClick.bind(this)}
-                        onItalicClick={this._onItalicClick.bind(this)}
-                        onUnorderedListClick={this._onUnorderedListClick.bind(this)}
-                        onOrderedListClick={this._onOrderedListClick.bind(this)}
-                        onImageClick={this._onImageClick.bind(this)}
-                        onLinkClick={this._onLinkClick.bind(this)}
+                        onBoldClick={this.onBoldClick.bind(this)}
+                        onItalicClick={this.onItalicClick.bind(this)}
+                        onUnorderedListClick={this.onUnorderedListClick.bind(this)}
+                        onOrderedListClick={this.onOrderedListClick.bind(this)}
+                        onImageClick={this.onImageClick.bind(this)}
+                        onLinkClick={this.onLinkClick.bind(this)}
                         boldPressed={this.state.boldPressed}
                         italicPressed={this.state.italicPressed}
                         unorderedListPressed={this.state.unorderedListPressed}
                         orderedListPressed={this.state.orderedListPressed}
                         imagePressed={this.state.imagePressed}
                         linkPressed={this.state.linkPressed}
-                    />
-                    <Editor
                         editorState={this.state.editorState}
-                        onChange={this._onChange.bind(this)}
                     />
+                    <div className="editor" onClick={this.focus.bind(this)}>
+                        <Editor
+                            editorState={this.state.editorState}
+                            onChange={this.onChange.bind(this)}
+                            ref='editor'
+                        />
+                    </div>
                 </div>
             </div>
         )
