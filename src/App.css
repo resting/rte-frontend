@@ -48,14 +48,13 @@ button {
     border: 1px solid transparent;
     margin: 1em;
     padding: .3em;
-    padding-bottom: .1em;
     outline: none;
     cursor: pointer;
     border-radius: 2px;
 }
 
-button.text {
-    padding-bottom: .3em;
+.toolbar-btn {
+    padding-bottom: .1em;
 }
 
 button:active {
@@ -104,4 +103,22 @@ button:active {
     width: 24px;
     height: 24px;
     margin-right: .3em;
+}
+
+.toolbar-right {
+    position: relative;
+}
+
+input[type="file"] {
+    opacity: 1;
+}
+
+.imageUploader {
+    position: absolute;
+    overflow: hidden;
+    width: 200px;
+    left: -150px;
+    border: 1px solid #ddd;
+    background: white;
+    padding: 1em;
 }

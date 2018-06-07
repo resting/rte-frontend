@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import Button from './toolbar-button'
+import ImageUploader from './image-uploader'
 
 class Toolbar extends Component {
     constructor(props) {
@@ -42,9 +43,7 @@ class Toolbar extends Component {
                         </div>
                     </div>
                     <div className="toolbar-right">
-                        <Button onClickHandler={() => this.props.onAddClick(this.state.linkurl)} className='text'>
-                            <span>Add</span>
-                        </Button>
+                        <button onClick={() => this.props.onAddClick(this.state.linkurl)}>Add</button>
                     </div>
                 </div>
                 <div className="toolbar-norm-state" style={style.toolbarstate}>
@@ -69,10 +68,10 @@ class Toolbar extends Component {
                         <Button onClickHandler={this.props.onLinkClick} className={linkPressed}>
                             <span className='material-icons'>link</span>
                         </Button>
+                        {imagePressed === 'pressed' &&
+                        <ImageUploader insertImageEntity={this.props.insertImageEntity}/>}
                     </div>
                 </div>
-
-
             </div>
         )
     }

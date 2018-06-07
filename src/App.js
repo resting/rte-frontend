@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
 import './App.css'
 import Toolbar from './components/toolbar'
-import {Editor, EditorState, RichUtils, CompositeDecorator, convertToRaw} from 'draft-js'
+import {Editor, EditorState, RichUtils, CompositeDecorator, AtomicBlockUtils, convertToRaw} from 'draft-js'
 import Link from './components/link'
+import Media from './components/media'
+import Posts from './components/posts'
+import {stateToHTML} from 'draft-js-export-html'
 
 function findLinkEntities(contentBlock, callback, contentState) {
     contentBlock.findEntityRanges(
@@ -14,6 +17,16 @@ function findLinkEntities(contentBlock, callback, contentState) {
         },
         callback,
     )
+}
+
+function mediaBlockRenderer(block) {
+    if (block.getType() === 'atomic') {
+        return {
+            component: Media,
+            editable: false,
+        }
+    }
+    return null
 }
 
 class App extends Component {
@@ -97,9 +110,6 @@ class App extends Component {
             pressed.linkPressed = entity.getType() === 'LINK'
         }
 
-        const raw = convertToRaw(contentState)
-        // console.log(raw)
-
         this.setState({...pressed, editorState})
     }
 
@@ -144,13 +154,57 @@ class App extends Component {
     }
 
     onImageClick() {
-        // this.setState({imagePressed: !this.state.imagePressed})
+        this.setState({imagePressed: !this.state.imagePressed})
 
+    }
+
+    insertImageEntity(src) {
+        const contentState = this.state.editorState.getCurrentContent()
+        const contentStateWithEntity = contentState.createEntity(
+            'image',
+            'IMMUTABLE',
+            {src},
+        )
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
+        const newEditorState = EditorState.set(
+            this.state.editorState,
+            {currentContent: contentStateWithEntity},
+        )
+
+        this.setState({
+            editorState: AtomicBlockUtils.insertAtomicBlock(
+                newEditorState,
+                entityKey,
+                ' ',
+            ),
+        })
     }
 
     onLinkClick() {
         // this.setState({linkPressed: !this.state.linkPressed})
 
+    }
+
+    onSubmit() {
+        const contentState = this.state.editorState.getCurrentContent()
+        const html = stateToHTML(contentState, {
+            entityStyleFn: (entity) => {
+                const entityType = entity.get('type').toLowerCase();
+                if (entityType === 'image') {
+                    const data = entity.getData();
+                    return {
+                        element: 'img',
+                        attributes: {
+                            src: data.src,
+                        },
+                        style: {
+                            maxWidth: '100%'
+                        },
+                    };
+                }
+            },
+        })
+        window.localStorage.setItem('draft', html)
     }
 
     render() {
@@ -165,6 +219,7 @@ class App extends Component {
                         onImageClick={this.onImageClick.bind(this)}
                         onLinkClick={this.onLinkClick.bind(this)}
                         onAddClick={this.onAddClick.bind(this)}
+                        insertImageEntity={this.insertImageEntity.bind(this)}
                         boldPressed={this.state.boldPressed}
                         italicPressed={this.state.italicPressed}
                         unorderedListPressed={this.state.unorderedListPressed}
@@ -175,11 +230,17 @@ class App extends Component {
                     />
                     <div className="editor" onClick={this.focus.bind(this)}>
                         <Editor
+                            blockRendererFn={mediaBlockRenderer}
                             editorState={this.state.editorState}
                             onChange={this.onChange.bind(this)}
                             ref='editor'
                         />
                     </div>
+                    <button className='submit' onClick={this.onSubmit.bind(this)}>Submit</button>
+                </div>
+                <div className="container">
+                    <h1>Posts</h1>
+                    <Posts/>
                 </div>
             </div>
         )
