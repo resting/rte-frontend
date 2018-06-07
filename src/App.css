@@ -2,7 +2,11 @@
     box-sizing: border-box;
 }
 
-body, html, select, input, button {
+body,
+html,
+select,
+input,
+button {
     font-size: 16px;
 }
 
@@ -10,19 +14,17 @@ body, html, select, input, button {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(/fonts/material-design-icons/MaterialIcons-Regular.eot); /* For IE6-8 */
-    src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url(/fonts/material-design-icons/MaterialIcons-Regular.woff2) format('woff2'),
-    url(/fonts/material-design-icons/MaterialIcons-Regular.woff) format('woff'),
-    url(/fonts/material-design-icons/MaterialIcons-Regular.ttf) format('truetype');
+    src: url(/fonts/material-design-icons/MaterialIcons-Regular.eot);
+    /* For IE6-8 */
+    src: local('Material Icons'), local('MaterialIcons-Regular'), url(/fonts/material-design-icons/MaterialIcons-Regular.woff2) format('woff2'), url(/fonts/material-design-icons/MaterialIcons-Regular.woff) format('woff'), url(/fonts/material-design-icons/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px; /* Preferred icon size */
+    font-size: 24px;
+    /* Preferred icon size */
     display: inline-block;
     line-height: 1;
     text-transform: none;
@@ -30,15 +32,12 @@ body, html, select, input, button {
     word-wrap: normal;
     white-space: nowrap;
     direction: ltr;
-
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */
     text-rendering: optimizeLegibility;
-
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
-
     /* Support for IE. */
     font-feature-settings: 'liga';
 }
@@ -121,4 +120,39 @@ input[type="file"] {
     border: 1px solid #ddd;
     background: white;
     padding: 1em;
+}
+
+.toolbar,
+.toolbar-link-state,
+.toolbar-norm-state {
+    height: 67px;
+    position: relative;
+    transition: all .5s
+}
+
+.toolbar {
+    overflow: hidden;
+}
+
+.toolbar-link-state,
+.toolbar-norm-state {
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.toolbar-link-state {
+    top: -67px;
+    z-index: 1;
+}
+
+.toolbar-norm-state {
+    top: -67px;
+}
+
+.toolbar-link-state.active {
+    top: 0;
+}
+
+.toolbar-norm-state.down {
+    top: 0;
 }

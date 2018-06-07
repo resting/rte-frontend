@@ -31,9 +31,13 @@ class Toolbar extends Component {
         const imagePressed = this.props.imagePressed ? 'pressed' : 'none'
         const linkPressed = this.props.linkPressed ? 'pressed' : 'none'
 
+        const toolbarLink = this.props.linkPressed ? 'active' : ''
+        const toolbarNorm = this.props.linkPressed ? 'down' : ''
+        style.toolbar.overflow = this.props.imagePressed ? 'visible' : 'hidden'
+
         return (
             <div className="toolbar" style={style.toolbar}>
-                <div className="toolbar-link-state" style={style.toolbarstate}>
+                <div className={`toolbar-link-state ${toolbarLink}`} style={style.toolbarstate}>
                     <div className="toolbar-left">
                         <div className="linkinputwrap">
                             <input type="text" className='linkinput' value={this.state.linkurl}
@@ -46,7 +50,7 @@ class Toolbar extends Component {
                         <button onClick={() => this.props.onAddClick(this.state.linkurl)}>Add</button>
                     </div>
                 </div>
-                <div className="toolbar-norm-state" style={style.toolbarstate}>
+                <div className={`toolbar-norm-state ${toolbarNorm}`} style={style.toolbarstate}>
                     <div className="toolbar-left">
                         <Button onClickHandler={this.props.onBoldClick} className={boldPressed}>
                             <i className='material-icons'>format_bold</i>
